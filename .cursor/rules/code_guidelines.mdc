@@ -1,0 +1,13 @@
+---
+description:
+globs:
+alwaysApply: true
+---
+
+- Always follow guidelines in [ruby_rules.md](mdc:ruby_rules.md)
+- Always follos guidelines in @project_structure.md
+- Whenever a change is made, update the @README.md file if needed.
+- Everytime changes are made to the code base:
+    - create/update the unit spec
+    - create/update the request spec
+    - create/update the factories if needed

@@ -1,0 +1,933 @@
+{
+  "openapi": "3.0.1",
+  "info": {
+    "title": "Rails API Template V1",
+    "version": "v1",
+    "description": "API for managing football/soccer data including teams, players, matches, and more.",
+    "contact": {
+      "name": "API Support",
+      "email": "support@rails-api-template.com"
+    },
+    "license": {
+      "name": "MIT",
+      "url": "https://opensource.org/licenses/MIT"
+    }
+  },
+  "servers": [
+    {
+      "url": "http://localhost:3000",
+      "description": "Development server"
+    },
+    {
+      "url": "https://api.rails-api-template.com",
+      "description": "Production server"
+    }
+  ],
+  "components": {
+    "securitySchemes": {
+      "bearerAuth": {
+        "type": "http",
+        "scheme": "bearer",
+        "bearerFormat": "JWT",
+        "description": "OAuth 2.0 Bearer Token from Doorkeeper"
+      }
+    },
+    "schemas": {
+      "User": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer",
+            "example": 1
+          },
+          "email": {
+            "type": "string",
+            "example": "user@example.com"
+          },
+          "first_name": {
+            "type": "string",
+            "example": "John"
+          },
+          "last_name": {
+            "type": "string",
+            "example": "Doe"
+          },
+          "created_at": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "updated_at": {
+            "type": "string",
+            "format": "date-time"
+          }
+        },
+        "required": [
+          "email",
+          "first_name",
+          "last_name"
+        ]
+      },
+      "Team": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer",
+            "example": 1
+          },
+          "name": {
+            "type": "string",
+            "example": "Barcelona FC"
+          },
+          "city": {
+            "type": "string",
+            "example": "Barcelona"
+          },
+          "country": {
+            "type": "string",
+            "example": "Spain"
+          },
+          "founded_year": {
+            "type": "integer",
+            "example": 1899
+          },
+          "created_at": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "updated_at": {
+            "type": "string",
+            "format": "date-time"
+          }
+        },
+        "required": [
+          "name",
+          "city",
+          "country"
+        ]
+      },
+      "Player": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer",
+            "example": 1
+          },
+          "first_name": {
+            "type": "string",
+            "example": "Lionel"
+          },
+          "last_name": {
+            "type": "string",
+            "example": "Messi"
+          },
+          "position": {
+            "type": "string",
+            "example": "Forward"
+          },
+          "jersey_number": {
+            "type": "integer",
+            "example": 10
+          },
+          "team_id": {
+            "type": "integer",
+            "example": 1
+          },
+          "created_at": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "updated_at": {
+            "type": "string",
+            "format": "date-time"
+          }
+        },
+        "required": [
+          "first_name",
+          "last_name",
+          "position",
+          "team_id"
+        ]
+      },
+      "Match": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer",
+            "example": 1
+          },
+          "home_team_id": {
+            "type": "integer",
+            "example": 1
+          },
+          "away_team_id": {
+            "type": "integer",
+            "example": 2
+          },
+          "match_date": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "home_score": {
+            "type": "integer",
+            "example": 2
+          },
+          "away_score": {
+            "type": "integer",
+            "example": 1
+          },
+          "status": {
+            "type": "string",
+            "example": "completed",
+            "enum": [
+              "scheduled",
+              "in_progress",
+              "completed",
+              "cancelled"
+            ]
+          },
+          "created_at": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "updated_at": {
+            "type": "string",
+            "format": "date-time"
+          }
+        },
+        "required": [
+          "home_team_id",
+          "away_team_id",
+          "match_date"
+        ]
+      },
+      "Error": {
+        "type": "object",
+        "properties": {
+          "error": {
+            "type": "string",
+            "example": "Error message"
+          },
+          "details": {
+            "type": "object",
+            "additionalProperties": true
+          }
+        }
+      },
+      "OAuthApplication": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer",
+            "example": 1
+          },
+          "name": {
+            "type": "string",
+            "example": "My OAuth App"
+          },
+          "uid": {
+            "type": "string",
+            "example": "abc123def456"
+          },
+          "secret": {
+            "type": "string",
+            "example": "xyz789uvw012"
+          },
+          "redirect_uri": {
+            "type": "string",
+            "example": "https://myapp.com/callback"
+          },
+          "scopes": {
+            "type": "string",
+            "example": "read write"
+          },
+          "confidential": {
+            "type": "boolean",
+            "example": true
+          },
+          "created_at": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "updated_at": {
+            "type": "string",
+            "format": "date-time"
+          }
+        },
+        "required": [
+          "name",
+          "redirect_uri"
+        ]
+      }
+    }
+  },
+  "tags": [
+    {
+      "name": "Users",
+      "description": "User management operations"
+    },
+    {
+      "name": "Teams",
+      "description": "Team management operations"
+    },
+    {
+      "name": "Players",
+      "description": "Player management operations"
+    },
+    {
+      "name": "Matches",
+      "description": "Match management operations"
+    },
+    {
+      "name": "Authentication",
+      "description": "Authentication operations"
+    },
+    {
+      "name": "OAuth Applications",
+      "description": "OAuth application management operations"
+    }
+  ],
+  "paths": {
+    "/api/v1/oauth_applications": {
+      "get": {
+        "summary": "Retrieves a list of OAuth applications",
+        "tags": [
+          "OAuth Applications"
+        ],
+        "security": [
+          {
+            "bearerAuth": [
+
+            ]
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "applications found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "applications": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "id": {
+                            "type": "integer"
+                          },
+                          "name": {
+                            "type": "string"
+                          },
+                          "uid": {
+                            "type": "string"
+                          },
+                          "secret": {
+                            "type": "string"
+                          },
+                          "redirect_uri": {
+                            "type": "string"
+                          },
+                          "scopes": {
+                            "type": "string"
+                          },
+                          "confidential": {
+                            "type": "boolean"
+                          },
+                          "created_at": {
+                            "type": "string",
+                            "format": "date-time"
+                          },
+                          "updated_at": {
+                            "type": "string",
+                            "format": "date-time"
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "unauthorized"
+          }
+        }
+      },
+      "post": {
+        "summary": "Creates a new OAuth application",
+        "tags": [
+          "OAuth Applications"
+        ],
+        "parameters": [
+
+        ],
+        "responses": {
+          "201": {
+            "description": "application created without auth",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "application": {
+                      "type": "object",
+                      "properties": {
+                        "id": {
+                          "type": "integer"
+                        },
+                        "name": {
+                          "type": "string"
+                        },
+                        "uid": {
+                          "type": "string"
+                        },
+                        "secret": {
+                          "type": "string"
+                        },
+                        "redirect_uri": {
+                          "type": "string"
+                        },
+                        "scopes": {
+                          "type": "string"
+                        },
+                        "confidential": {
+                          "type": "boolean"
+                        },
+                        "created_at": {
+                          "type": "string",
+                          "format": "date-time"
+                        },
+                        "updated_at": {
+                          "type": "string",
+                          "format": "date-time"
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "invalid request"
+          }
+        },
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "oauth_application": {
+                    "type": "object",
+                    "properties": {
+                      "name": {
+                        "type": "string",
+                        "example": "My OAuth App"
+                      },
+                      "redirect_uri": {
+                        "type": "string",
+                        "example": "https://myapp.com/callback"
+                      },
+                      "scopes": {
+                        "type": "string",
+                        "example": "read write"
+                      }
+                    },
+                    "required": [
+                      "name",
+                      "redirect_uri"
+                    ]
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/oauth_applications/{id}": {
+      "parameters": [
+        {
+          "name": "id",
+          "in": "path",
+          "required": true,
+          "schema": {
+            "type": "integer"
+          }
+        }
+      ],
+      "get": {
+        "summary": "Retrieves an OAuth application",
+        "tags": [
+          "OAuth Applications"
+        ],
+        "security": [
+          {
+            "bearerAuth": [
+
+            ]
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "application found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "application": {
+                      "type": "object",
+                      "properties": {
+                        "id": {
+                          "type": "integer"
+                        },
+                        "name": {
+                          "type": "string"
+                        },
+                        "uid": {
+                          "type": "string"
+                        },
+                        "secret": {
+                          "type": "string"
+                        },
+                        "redirect_uri": {
+                          "type": "string"
+                        },
+                        "scopes": {
+                          "type": "string"
+                        },
+                        "confidential": {
+                          "type": "boolean"
+                        },
+                        "created_at": {
+                          "type": "string",
+                          "format": "date-time"
+                        },
+                        "updated_at": {
+                          "type": "string",
+                          "format": "date-time"
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "application not found"
+          },
+          "401": {
+            "description": "unauthorized"
+          }
+        }
+      },
+      "put": {
+        "summary": "Updates an OAuth application",
+        "tags": [
+          "OAuth Applications"
+        ],
+        "security": [
+          {
+            "bearerAuth": [
+
+            ]
+          }
+        ],
+        "parameters": [
+
+        ],
+        "responses": {
+          "200": {
+            "description": "application updated",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "application": {
+                      "type": "object",
+                      "properties": {
+                        "id": {
+                          "type": "integer"
+                        },
+                        "name": {
+                          "type": "string"
+                        },
+                        "uid": {
+                          "type": "string"
+                        },
+                        "secret": {
+                          "type": "string"
+                        },
+                        "redirect_uri": {
+                          "type": "string"
+                        },
+                        "scopes": {
+                          "type": "string"
+                        },
+                        "confidential": {
+                          "type": "boolean"
+                        },
+                        "created_at": {
+                          "type": "string",
+                          "format": "date-time"
+                        },
+                        "updated_at": {
+                          "type": "string",
+                          "format": "date-time"
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "invalid request"
+          },
+          "404": {
+            "description": "application not found"
+          },
+          "401": {
+            "description": "unauthorized"
+          }
+        },
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "oauth_application": {
+                    "type": "object",
+                    "properties": {
+                      "name": {
+                        "type": "string",
+                        "example": "Updated OAuth App"
+                      },
+                      "redirect_uri": {
+                        "type": "string",
+                        "example": "https://updatedapp.com/callback"
+                      },
+                      "scopes": {
+                        "type": "string",
+                        "example": "read write admin"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "delete": {
+        "summary": "Deletes an OAuth application",
+        "tags": [
+          "OAuth Applications"
+        ],
+        "security": [
+          {
+            "bearerAuth": [
+
+            ]
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "application deleted"
+          },
+          "404": {
+            "description": "application not found"
+          },
+          "401": {
+            "description": "unauthorized"
+          }
+        }
+      }
+    },
+    "/api/v1/users": {
+      "get": {
+        "summary": "Retrieves a list of users",
+        "tags": [
+          "Users"
+        ],
+        "security": [
+          {
+            "bearerAuth": [
+
+            ]
+          }
+        ],
+        "parameters": [
+          {
+            "name": "page",
+            "in": "query",
+            "required": false,
+            "description": "Page number for pagination",
+            "schema": {
+              "type": "integer"
+            }
+          },
+          {
+            "name": "per_page",
+            "in": "query",
+            "required": false,
+            "description": "Number of users per page",
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "users found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "data": {
+                        "type": "object",
+                        "properties": {
+                          "id": {
+                            "type": "string"
+                          },
+                          "type": {
+                            "type": "string",
+                            "example": "users"
+                          },
+                          "attributes": {
+                            "type": "object",
+                            "properties": {
+                              "email": {
+                                "type": "string"
+                              },
+                              "firstName": {
+                                "type": "string"
+                              },
+                              "lastName": {
+                                "type": "string"
+                              }
+                            }
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "unauthorized"
+          }
+        }
+      },
+      "post": {
+        "summary": "Creates a new user",
+        "tags": [
+          "Users"
+        ],
+        "parameters": [
+
+        ],
+        "responses": {
+          "201": {
+            "description": "user created"
+          },
+          "422": {
+            "description": "invalid request"
+          }
+        },
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "user": {
+                    "type": "object",
+                    "properties": {
+                      "email": {
+                        "type": "string",
+                        "example": "user@example.com"
+                      },
+                      "password": {
+                        "type": "string",
+                        "example": "password123"
+                      },
+                      "password_confirmation": {
+                        "type": "string",
+                        "example": "password123"
+                      },
+                      "first_name": {
+                        "type": "string",
+                        "example": "John"
+                      },
+                      "last_name": {
+                        "type": "string",
+                        "example": "Doe"
+                      }
+                    },
+                    "required": [
+                      "email",
+                      "password",
+                      "password_confirmation"
+                    ]
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/users/{id}": {
+      "parameters": [
+        {
+          "name": "id",
+          "in": "path",
+          "required": true,
+          "description": "User ID",
+          "schema": {
+            "type": "integer"
+          }
+        }
+      ],
+      "get": {
+        "summary": "Retrieves a specific user",
+        "tags": [
+          "Users"
+        ],
+        "security": [
+          {
+            "bearerAuth": [
+
+            ]
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "user found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "data": {
+                      "type": "object",
+                      "properties": {
+                        "id": {
+                          "type": "string"
+                        },
+                        "type": {
+                          "type": "string",
+                          "example": "users"
+                        },
+                        "attributes": {
+                          "type": "object",
+                          "properties": {
+                            "email": {
+                              "type": "string"
+                            },
+                            "firstName": {
+                              "type": "string"
+                            },
+                            "lastName": {
+                              "type": "string"
+                            }
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "user not found"
+          }
+        }
+      },
+      "put": {
+        "summary": "Updates a user",
+        "tags": [
+          "Users"
+        ],
+        "security": [
+          {
+            "bearerAuth": [
+
+            ]
+          }
+        ],
+        "parameters": [
+
+        ],
+        "responses": {
+          "200": {
+            "description": "user updated"
+          },
+          "404": {
+            "description": "user not found"
+          }
+        },
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "user": {
+                    "type": "object",
+                    "properties": {
+                      "first_name": {
+                        "type": "string",
+                        "example": "Updated Name"
+                      },
+                      "last_name": {
+                        "type": "string",
+                        "example": "Updated Last Name"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "delete": {
+        "summary": "Deletes a user",
+        "tags": [
+          "Users"
+        ],
+        "security": [
+          {
+            "bearerAuth": [
+
+            ]
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "user deleted"
+          },
+          "404": {
+            "description": "user not found"
+          }
+        }
+      }
+    }
+  }
+}
